@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.11-slim'
-            args '-u root:root'
-        }
-    }
+    agent any
 
     stages {
         stage('Checkout') {
@@ -15,14 +10,21 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'python -m pip install --upgrade pip'
-                sh 'pip install -r requirements.txt'
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Run Unit Tests') {
             steps {
-                sh 'python -m pytest --junitxml=test-results.xml -v'
+                sh '''
+                    . venv/bin/activate
+                    python -m pytest --junitxml=test-results.xml -v
+                '''
             }
         }
     }
