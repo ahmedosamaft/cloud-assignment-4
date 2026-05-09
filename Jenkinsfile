@@ -1,5 +1,4 @@
 pipeline {
-    agent any
 
     stages {
         stage('Checkout') {
@@ -23,15 +22,9 @@ pipeline {
             steps {
                 sh '''
                     . venv/bin/activate
-                    python -m pytest --junitxml=test-results.xml -v
+                    python -m pytest -v
                 '''
             }
-        }
-    }
-
-    post {
-        always {
-            junit 'test-results.xml'
         }
     }
 }
